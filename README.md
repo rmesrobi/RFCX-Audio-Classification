@@ -30,7 +30,7 @@ Goals:
 - Provide insight on how hashtags are used through sentiment analysis and vote counts
 - Perform NMF and topic modeling
 
-Context: I thought I'd be more interested in image processing, but NLP seems more powerful. The book Everybody Lies had a big impact on me and I'd love to apply my learnings towards analyzing google searches relating to public health (e.g. who's searching for 'cough' during COVID) and psychology. Not sure how I'd apply this to Capstone 3.
+Context: The book [Everybody Lies](https://www.goodreads.com/book/show/28512671-everybody-lies) had a big impact on me and I'd love to apply my learnings towards analyzing google searches relating to public health (e.g. who's searching for 'cough' during COVID) and psychology. Not sure how I'd apply this to Capstone 3.
 
 ### Rainforest Connection Species Audio Detection
 

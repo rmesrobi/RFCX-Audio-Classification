@@ -5,7 +5,7 @@
 
 Citi Bike is a successfull docked bikeshare program in NYC.
 
-Data:
+Data:\
 [Citi Bike Trip Histories](https://s3.amazonaws.com/tripdata/index.html)  - monthly data reports from 2013 to present\
 [Monthly Operating Reports](https://www.citibikenyc.com/system-data/operating-reports) - city reporting summarizing monthly operations\
 [GBFS!](http://gbfs.citibikenyc.com/gbfs/gbfs.json) - Citi Bike's Real-time API in GBFS specification

@@ -6,8 +6,8 @@
 Citi Bike is a successfull docked bikeshare program in NYC.
 
 Data:
-[Citi Bike Trip Histories](https://s3.amazonaws.com/tripdata/index.html)  - monthly data reports from 2013 to present
-[Monthly Operating Reports](https://www.citibikenyc.com/system-data/operating-reports) - city reporting summarizing monthly operations
+[Citi Bike Trip Histories](https://s3.amazonaws.com/tripdata/index.html)  - monthly data reports from 2013 to present\
+[Monthly Operating Reports](https://www.citibikenyc.com/system-data/operating-reports) - city reporting summarizing monthly operations\
 [GBFS!](http://gbfs.citibikenyc.com/gbfs/gbfs.json) - Citi Bike's Real-time API in GBFS specification
 
 Goals:
@@ -43,3 +43,8 @@ Goals:
 - Predict the species given their recording
 
 Context: I love music and Spotify has a big office in LA. My gf is also a musician. I would like to apply my learnings to develop a tool that synthesizes humming into tabs or sheet music. 
+
+
+git remote add origin https://github.com/rmesrobi/capstone_2.git
+git branch -M main
+git push -u origin main

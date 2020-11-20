@@ -44,7 +44,3 @@ Goals:
 
 Context: I love music and Spotify has a big office in LA. My gf is also a musician. I would like to apply my learnings to develop a tool that synthesizes humming into tabs or sheet music. 
 
-
-git remote add origin https://github.com/rmesrobi/capstone_2.git
-git branch -M main
-git push -u origin main

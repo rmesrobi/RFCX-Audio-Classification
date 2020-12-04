@@ -119,13 +119,11 @@ def create_spec_train_val(filename):
     <img src="images/spec_grid_2.png" width='400'/>
 </p>
 
-### Model Summary:
+### Training and Validation Scores:
 
 <p align="center">
     <img src="images/model_fit.png" width='600'/>
 </p>
-
-### Training and Validation Scores:
 
 <p align="center">
     <img src="images/model_train_val.png" width='600'/>
@@ -141,6 +139,35 @@ def create_spec_train_val(filename):
 
 <p align="center">
     <img src="images/confusion_matrix.png" width='600'/>
+</p>
+
+The next model I tried incorporated data augmentation to generate additional training data. I did this by using experimental Keras Preprocessing Layers. 
+
+```
+data_augmentation = keras.Sequential(
+    [
+     layers.experimental.preprocessing.RandomFlip('horizontal',
+                                                  input_shape = (img_height, img_width, 3)),
+     layers.experimental.preprocessing.RandomRotation(0.1),
+     layers.experimental.preprocessing.RandomZoom(0.1),
+    ])
+```
+
+Here are a few examples of the augmented images:
+
+<p align="center">
+    <img src="images/data_augmentation.png" width='600'/>
+</p>
+
+I also included dropout into this model as a form of regularization. However, this model did not perform as well as the first.
+
+
+### Training and Validation Scores:
+<p align="center">
+    <img src="images/dropout_train_val.png" width='600'/>
+</p>
+<p align="center">
+    <img src="images/dropout_test.png" width='600'/>
 </p>
 
 ## Future Steps

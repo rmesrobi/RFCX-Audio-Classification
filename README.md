@@ -9,7 +9,7 @@
 
 The [Rainforest Connection Species Audio Detection](https://www.kaggle.com/c/rfcx-species-audio-detection) competition is currently live on Kaggle. The goal of the competition is to detect a variety of bird and frog species in a tropic soundscape recording. The competition database contains a series of acoustically complex, one-minute recordings containing at least one call of a known wildlife species. The database also includes true positive and false positive csv files that can be used to help train the detection model.
 
-## Data Exploration
+## EDA & Audio Processing
 
 The dataset includes over 4,700 one-minute audio recordings that are designated for model training. Data from these recordings can be found in the train_tp (1,132 rows) and train_fp (3,958 rows) csv files. The csv files include detail about the recordings such as: recording_id, species_id, songtype_id, start and end time, and min and max frequencies. The test audio database is comprised of nearly 2,000 one-minute audio recordings. No labels are included for these recordings.
 
@@ -24,7 +24,7 @@ My analysis and model are based on only the true positive recordings and csv fil
     <img src="images/call_duration_by_species_id.png" width='600'/>
 </p>
 
-Audio Classification is dependent on the features one can extract from audio data. For this project, I focused on analyzing Mel Spectrograms, which will be explained later. For now, we will start with the concept of sound.
+I used librosa, a Python module for audio and music processing to extract features from the audio recordings. For this project, I focused on analyzing Mel Spectrograms, which will be explained later. For now, we will start with the concept of sound.
 
 Sound is basically a sequence of vibrations in varying pressure strengths. Loosely speaking, visualizing sound really means visualizing airwaves. A two-dimensional representation of a song can be expressed in a waveplot, which illustrates amplitude over time. Here are a few examples of waveplots from the dataset. The highlighted sections of the plots illustrate the moment in time the species is heard in the audio clip. The last waveplot is an example of an audio recording with five distinct calls from four different species of animals.
 
@@ -81,6 +81,13 @@ Separate audio into windows > Compute the Fast Fourier Transform (FFT) > Generat
 </p>
 
 A detection model will need to identify true positive and false positive predictions from the audio clips. The spectrogram above is an example of an audio clip with multiple true and false positives.
+
+### Image Processing
+1. Created clips of all true positive audio samples, which I then used to generate Mel Spec images.
+2. Saved image files into a directory and sub-directory
+3. Used TensorFlow to get labeled Mel Spec image data, labeled by species_id, as a generator object
+4. Adjusted image size to (180, 180, 3)
+5. Normalized data to a 0 - 1 scale for the CNN model using TensorFlow preprocessing
 
 The first model I used consisted of three convultion blocks with a max pool layer in each of them. The model is activated by a relu activation function at each layer and uses a softmax activation function for multi-class classification. When compiling the model, I used the Adam optimizer and SparseCategoricalCrossentropy loss function. I passed the metrics argument to be able to view training and validation accuracy for each training epoch.
 
@@ -141,7 +148,7 @@ def create_spec_train_val(filename):
     <img src="images/confusion_matrix.png" width='600'/>
 </p>
 
-The next model I tried incorporated data augmentation to generate additional training data. I did this by using experimental Keras Preprocessing Layers. 
+The next model I tried incorporated data augmentation to generate additional training data. I did this by using experimental Keras Preprocessing Layers. The image augmentation reduced the model's accuracy on both training and validation and also on testing.
 
 ```
 data_augmentation = keras.Sequential(
@@ -170,12 +177,10 @@ I also included dropout into this model as a form of regularization. However, th
     <img src="images/dropout_test.png" width='600'/>
 </p>
 
-## Future Steps
+## Next Steps
 
-1. Random Forest on wavelengths
-2. Incorporate false positives into test
-3. Improve mel spectrogram images
-4. Train model on full clip
+I would like to improve the accuracy of the CNN model by adjusting the audio clip size. This would increase the amount of images I could use to train my model. 
 
+I would also like to use other audio features such as mel-frequency cepstral coefficients (MFCCs), implement a Random Forest model, incorporate false positives into training and testing, improve the quality of the mel spectrogram images, and increase the training clip length to the full audio file length.
 
 [Rainforest Audio Detection Data](https://www.kaggle.com/c/rfcx-species-audio-detection/data)

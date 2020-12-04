@@ -1,46 +1,139 @@
-## Capstone_2 Proposal
+# Rainforest Connection Species Audio Detection
+
+<p align="center">
+    <img src="images/header.png" width='700'/>
+</p>
 
 
-### Citi Bikes
+## Overview
 
-Citi Bike is a successfull docked bikeshare program in NYC.
+The Rainforest Connection Species Audio Detection competition is currently live on Kaggle. The goal of the competition is to detect a variety of bird and frog species in a tropic soundscape recording. The competition database contains a series of acoustically complex, one-minute recordings containing at least one call of a known wildlife species. The database also includes true positive and false positive csv files that can be used to help train the detection model.
 
-Data:\
-[Citi Bike Trip Histories](https://s3.amazonaws.com/tripdata/index.html)  - monthly data reports from 2013 to present\
-[Monthly Operating Reports](https://www.citibikenyc.com/system-data/operating-reports) - city reporting summarizing monthly operations\
-[GBFS!](http://gbfs.citibikenyc.com/gbfs/gbfs.json) - Citi Bike's Real-time API in GBFS specification
+## Data Exploration
 
-Goals:
-- Perform EDA on Citi Bike Trip Histories
-- Connect to GBFS API for vehicle status information
-- Measure relationship between distance traveled by unique bike id and maintenance schedule for preventative maintenance model
-- Use Citi Bike Trip Histories and Weather data for predicted demand
+The dataset includes over 4,700 one-minute audio recordings that are designated for model training. Data from these recordings can be found in the train_tp (1,132 rows) and train_fp (3,958 rows) csv files. The csv files include detail about the recordings such as: recording_id, species_id, songtype_id, start and end time, and high and low frequencies. The test audio database is comprised of nearly 2,000 one-minute audio recordings. No labels are included for these recordings.
 
-Context: I'm interested in predictive geospatial modeling and have a lot of experience in shared-mobility. I think [this company](https://www.zoba.com/) is really cool. Demand was never the problem (sorry Zoba). It was theft and the logistical challenges of managing large fleets of free-floating vehicles. I would like to apply my industry knowledge to improve the operational capabilities of shared-mobility vendors. Could be a cool capstone 3?
+My analysis and model are based on only the true positive recordings and csv file. After cleaning the data I was left with 1,088 one-minute audio recordings. The graphs below summarize the metadata for these recordings.
 
-### US Election Tweets
+<p align="center">
+    <img src="images/count_of_species_in_dataset.png" width='400'/>
+</p>
 
-1.7M tweets from October to November 2020.
+<p align="center">
+    <img src="images/bandwidth_by_species_id.png" width='400'/>
+    <img src="images/call_duration_by_species_id.png" width='400'/>
+</p>
 
-Data:
-[US Election Tweets](https://www.kaggle.com/manchunhui/us-election-2020-tweets)
+Audio Classification is dependent on the features one can extract from audio data. For this project, I focused on analyzing Mel Spectrograms, which will be explained later. For now, we will start with the concept of sound.
 
-Goals:
-- Apply NLP to both #donaldtrump and #joebiden tweets
-- Provide insight on how hashtags are used through sentiment analysis and vote counts
-- Perform NMF and topic modeling
+Sound is basically a sequence of vibrations in varying pressure strengths. Loosely speaking, visualizing sound really means visualizing airwaves. A two-dimensional representation of a song can be expressed in a waveplot, which illustrates amplitude over time. Here are a few examples of waveplots from the dataset. The highlighted sections of the graphs illustrate the moment in time the species is heard in the audio clip. The last waveplot is an example of a clip with five distinct calls from four different species of animals.
 
-Context: The book [Everybody Lies](https://www.goodreads.com/book/show/28512671-everybody-lies) had a big impact on me and I'd love to apply my learnings toward analyzing google searches relating to public health (e.g. who's searching for 'cough' during COVID) and psychology. Not sure how I'd apply this to Capstone 3.
+<p align="center">
+    <img src="images/waveplot_10.png" width='400'/>
+    <img src="images/waveplot_12.png" width='400'/>
+    <img src="images/waveplot_14.png" width='400'/>
+    <img src="images/waveplot_23.png" width='400'/>
+</p>
 
-### Rainforest Connection Species Audio Detection
+<p align="center">
+    <img src="images/waveplot_multi-class.png" width='800'/>
+</p>
 
-Automate the detection of bird and frog species in a tropical soundscape
+Skipping ahead a few steps, we wind up with a spectrogram. A spectrogram is a visual representation of the spectrum of frequencies of a signal as it varies over time- showing which frequencies are active at a particular moment. A spectrogram transforms frequency to a log scale and amplitude to decibels. Further complicating things, the Mel Scale is the result of some non-linear transformation of the frequency scale. This Mel Scale is constructed such that sounds are of equal distance from each other on the Mel Scale. This is how humans hear "sound".
 
-Data:
+<p align="center">
+    <img src="images/spec_example.png" width='250'/>
+    <img src="images/spec_log_example.png" width='250'/>
+    <img src="images/mel_spec_example.png" width='250'/>
+</p>
+
+Recap:
+The Mel Spectrogram is the result of the following pipeline:
+1. Separate to windows
+2. Compute the FFT (Fast Fourier Transform)
+3. Generate a Mel scale
+4. Generate a Spectrogram
+
+
+<p align="center">
+    <img src="images/hipster_joe.png" width='200'/>
+</p>
+
+
+
+Here are a few examples of Mel Spectrograms from the dataset:
+
+<p align="center">
+    <img src="images/spec_23.png" width='200'/>
+    <img src="images/spec_14.png" width='200'/>
+    <img src="images/spec_12.png" width='200'/>
+    <img src="images/spec_10.png" width='200'/>
+</p>
+
+These Spectrograms are great for computers to train on. Below is an example of true positive and false positive predictions on a Mel Spectrogram.
+
+
+## Model
+
+A detection model will need to identify true positive and false positive predictions from the audio clips. Here is an example of an audio clip with multiple true and false positives:
+
+<p align="center">
+    <img src="images/tpfp_example.png" width='800'/>
+</p>
+
+The model I used consists of three convultion blocks with a max pool layer in each of them. The model is activated by a relu activation function at each layer and uses a softmax activation function for multi-class classification. When compiling the model, I used the Adam optimizer and SparseCategoricalCrossentropy loss function. I passed the metrics argument to be able to view training and validation accuracy for each training epoch.
+
+To reduce complexity, I trained the model using only true positive recordings. I reduced the audio clip dimensions so that only the true positive occured in the clip. Here is a comparison of images I used to train my model:
+
+<p align="center">
+    <img src="images/spec_grid_2.png" width='400'/>
+</p>
+
+Model Summary:
+
+<p align="center">
+    <img src="images/model_summary.png" width='300'/>
+</p>
+
+Model Fit:
+
+<p align="center">
+    <img src="images/model_fit.png" width='300'/>
+</p>
+
+Training and Validation Scores:
+
+<p align="center">
+    <img src="images/model_train_val.png" width='300'/>
+</p>
+
+Predicting on test data: The test data is a holdout from the train_tp dataframe.
+
+<p align="center">
+    <img src="images/model_test.png" width='300'/>
+</p>
+
+
+Confusion Matrix
+
+<p align="center">
+    <img src="images/confusion_matrix.png" width='300'/>
+</p>
+
+The model confused species 9 with species 0 twice. Audio examples from these two species can be found here.
+
+
+## Future Steps
+
+Random Forest on wavelengths
+Incorporate false positives into test
+Improve mel spectrogram images
+Train model on full clip
+
+Random Forest on wavelengths
+
+Incorporate TP
+
+Train model on full clip
+
 [Rainforest Audio Detection](https://www.kaggle.com/c/rfcx-species-audio-detection/data)
-
-Goals:
-- Predict the species given their recording
-
-Context: I love music and Spotify has a big office in LA. My gf is also a musician. I would like to apply my learnings to develop a tool that synthesizes humming into tabs or sheet music. 
-
